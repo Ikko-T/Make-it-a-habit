@@ -12,13 +12,18 @@ class PostsController < ApplicationController
 
     # 新規習慣化を作成するアクション
     def new
+        @post = Post.new
     end
 
-    # 新規作成した習慣を送信するアクション
+    # 新規作成した習慣リストを送信するアクション
     def create
         @post = Post.new(content: params[:content])
-        @post.save
-        redirect_to("/posts/index") #指定のURLに転送する
+        if @post.save
+            flash[:notice] = "新規作成しました"
+            redirect_to("/posts/index") #指定のURLに転送する
+        else
+            render("posts/new")
+        end
     end
 
     # 習慣化リストの編集をするアクション
@@ -31,6 +36,7 @@ class PostsController < ApplicationController
         @post = Post.find_by(id: params[:id])
         @post.content = params[:content] # フォームの入力値を受け取る
         if @post.save
+            flash[:notice] = "内容を編集しました"
             redirect_to("/posts/index")
         else
             render("posts/edit")
@@ -40,6 +46,7 @@ class PostsController < ApplicationController
     def destroy
         @post = Post.find_by(id: params[:id])
         @post.destroy
+        flash[:notice] = "削除しました"
         redirect_to("/posts/index")
     end
 end
