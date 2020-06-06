@@ -30,8 +30,11 @@ class PostsController < ApplicationController
     def update
         @post = Post.find_by(id: params[:id])
         @post.content = params[:content] # フォームの入力値を受け取る
-        @post.save
-        redirect_to("/posts/index")
+        if @post.save
+            redirect_to("/posts/index")
+        else
+            render("posts/edit")
+        end
     end
 
     def destroy
